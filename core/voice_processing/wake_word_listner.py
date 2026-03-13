@@ -2,16 +2,21 @@ import sounddevice as sd
 import numpy as np
 from openwakeword import Model
 from faster_whisper import WhisperModel
+from core.command_router.router import route_command
 import time
+import warnings
+warnings.filterwarnings('ignore')
 
 SAMPLE_RATE = 16000
 CHUNK_SIZE = 1280
 LISTENING_COMMAND = False
 
+
 model = Model()
 Speech_to_text = WhisperModel('base.en',device='cpu',compute_type='int8')
 
-print("Cipher AI is listening... Say \"ALEXA\" .")
+print("--"*50)
+print("\nCipher AI is listening... Say \"ALEXA\" .")
 
 def record_command():
     print("Listening for command...")
@@ -36,7 +41,7 @@ def record_command():
     for segment in segments:
         text = text + segment.text
     
-    print("Command : ",text.strip())
+    route_command(text.strip())
 
 def audio_callback(indata,frame,time,status):
 
@@ -51,7 +56,7 @@ def audio_callback(indata,frame,time,status):
     for wake_word, score in prediction.items():
         if score > 0.8 and wake_word == 'alexa' and not LISTENING_COMMAND:
             print(f"Wake word detected: {wake_word} (score={score:.2f})")
-            print("\nCipher AI activated.....")
+            print("Cipher AI activated.....")
             LISTENING_COMMAND = True
 
 
@@ -59,11 +64,14 @@ with sd.RawInputStream(
     samplerate=SAMPLE_RATE,
     blocksize=CHUNK_SIZE,
     dtype='int16',channels=1,
-    callback=audio_callback):
+    callback=audio_callback) as stream:
     while True:
         if LISTENING_COMMAND:
+            stream.stop()
             record_command()
             LISTENING_COMMAND = False
             print("Cleaning up audio buffer...")
             time.sleep(1.5)
-            print("\nListening for \"ALEXA\"...")
+            print("--"*50)
+            print("\nCipher AI is listening... Say \"ALEXA\" .")
+            stream.start()
