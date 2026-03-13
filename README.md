@@ -43,8 +43,8 @@ To build a **scalable**, **centralized AI platform** that seamlessly integrates:
          |                                      |
          v                                      v
    +-----------+                         +-------------+
-   | LangGraph |                         |  Memory DB  |
-   | Agent     |                         |  MongoDB    |
+   | LangChain |                         |  Memory DB  |
+   | Agents    |                         |  MongoDB    |
    +-----+-----+                         +-------------+
          |
          v
@@ -92,56 +92,59 @@ The repository is organized into modular components.
 ```text
 cipher_ai/
 ├── core/                   # Central orchestrator and fundamental utilities
-│   ├── config/             # Environment variables and system configurations
-│   ├── logger/             # Centralized logging system
-│   └── exceptions/         # Custom error handling classes
+│   ├── command_router/     # Routing logic for agent commands
+│   └── voice_processing/   # Wake word listening and audio processing
 │
-├── agents/                 # AI Reasoning logic
-│   ├── base/               # Base AI agent structures
-│   ├── workflows/          # Multi-step LangGraph workflows
-│   └── prompts/            # System prompts and instruction templates
+├── agents/                 # AI Reasoning logic and graph definitions
+│   ├── cipher_agent.py     # Main agent implementation
+│   └── agent_graph.py      # LangGraph workflow definition
 │
 ├── tools/                  # Execution scripts and actionable plugins
-│   ├── system/             # OS-level control (open apps, manage files)
-│   ├── browser/            # Web automation scripts (Playwright)
-│   ├── search/             # Internet search and API retrievals
-│   └── iot/                # Hardware and smart device controls
+│   ├── browser_tool.py     # Web automation (Playwright)
+│   ├── iot_tool.py         # Hardware controls
+│   ├── search_tool.py      # Search and API retrievals
+│   ├── system_tool.py      # OS-level control
+│   └── vision_tool.py      # Vision processing tools
 │
-├── services/               # Background jobs and external audio processors
-│   ├── speech/             # Whisper STT and text-to-speech services
-│   └── wakeword/           # Porcupine / openWakeWord listeners
+├── services/               # Background jobs and external processors
+│   ├── automation_service.py # Automation management
+│   ├── iot_service.py      # IoT communication
+│   ├── speech_service.py   # Speech-to-text (Whisper)
+│   └── vision_service.py   # Vision processing logic
 │
 ├── database/               # Database connection layers
-│   ├── mongodb/            # Flexible memory and conversation logs
-│   └── postgresql/         # Structured relational knowledge
+│   ├── mongodb.py          # MongoDB utilities
+│   └── postgres.py         # PostgreSQL utilities
 │
-├── api/                    # FastAPI server
-│   ├── routes/             # REST endpoints (status, manual triggers)
-│   └── websockets/         # Real-time voice/data streaming
+├── api/                    # FastAPI server implementation
+│   └── main.py             # API entry point
 │
-├── ui/                     # Streamlit dashboard for monitoring
-│   ├── components/         # Reusable UI widgets
-│   └── pages/              # Analytics, logs, and settings views
+├── ui/                     # Dashboards and monitoring interfaces
+│   └── streamlit/          # Streamlit monitoring application
 │
-├── mobile/                 # Flutter companion application codebase
+├── mobile/                 # Mobile application codebase
+│   └── flutter_app/        # Flutter companion app
 │
 ├── esp32/                  # Microcontroller firmware (C++/Arduino)
-│   ├── mic_node/           # Remote audio capture firmware
-│   └── control_node/       # Hardware relay control code
+│   └── firmware/           # ESP32 firmware code
 │
-└── models/                 # Local machine learning models
-    ├── whisper/            # Local STT weights
-    └── vision/             # PyTorch models for camera perception
+├── models/                 # Local machine learning models
+│   └── pytorch_models/     # Model weights and definitions
+│
+├── main.py                 # Application entry point
+├── pyproject.toml          # Project configuration (uv)
+└── uv.lock                 # Dependency lock file
 ```
 ---
 ## Technology Stack
 - **Backend**: **FastAPI** `(High-speed orchestration)`
 - **AI & Agents**: **LangChain**, **LangGraph**, **PyTorch** `(Reasoning & Machine Learning)`
 - **Automation**: **Playwright** `(Web data extraction)`
-- **Databases**: **MongoDB** `(Flexible memory)`, **PostgreSQL** `(Relational knowledge)`
+- **Databases**: **MongoDB**, **PostgreSQL** `(Relational and NoSQL storage)`
+- **Package Management**: **uv** `(Lightning-fast Python dependency management)`
 - **Embedded**: **ESP32**, **ESP32-CAM** `(Edge processing & vision)`
 - **Interfaces**: **Flutter** `(Mobile UX)`, **Streamlit** `(Web Dashboards)`
-- **Speech Processing**: **Whisper (or similar)** `(Accurate audio transcription)`
+- **Speech Processing**: **Whisper** `(Accurate audio transcription)`
 
 ## Development Roadmap
 - **Phase 1**: Voice input & agent-based task execution (Local).
